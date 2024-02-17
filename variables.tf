@@ -47,3 +47,44 @@ variable "alb_healthcheck_config" {
     unhealthy_threshold = optional(number, 5)
   })
 }
+
+variable "autoscaling_group_config" {
+  description = "Autoscaling group configuration"
+  nullable    = true
+  default     = {}
+
+  type = object({
+    desired_capacity          = optional(number, 1)
+    min_size                  = optional(number, 1)
+    max_size                  = optional(number, 6)
+    health_check_grace_period = optional(number, 300) # 5 minutes
+    health_check_type         = optional(string, "ELB")
+    force_delete              = optional(bool, true)
+  })
+}
+
+variable "autoscaling_policy_cpu" {
+  description = "Autoscaling policy for CPU Utilization configuration"
+  nullable    = true
+  default     = {}
+
+  type = object({
+    enabled          = optional(bool, true)
+    name             = optional(string, "CPU Utilization")
+    disable_scale_in = optional(bool, false)
+    target_value     = optional(number, 40)
+  })
+}
+
+variable "autoscaling_policy_alb" {
+  description = "Autoscaling policy for ALB request count configuration"
+  nullable    = true
+  default     = {}
+
+  type = object({
+    enabled          = optional(bool, true)
+    name             = optional(string, "Load balancer request count")
+    disable_scale_in = optional(bool, false)
+    target_value     = optional(number, 30)
+  })
+}
